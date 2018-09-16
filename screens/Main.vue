@@ -1,17 +1,12 @@
 <template>
-  <view class="container">
-    <text class="text-color-primary">My Vue Native App</text>
-  </view>
+  <nb-container>
+    <nb-header>
+      <nb-body>
+        <nb-title>Title</nb-title>
+      </nb-body>
+    </nb-header>
+    <nb-content padder>
+      <nb-text>Content</nb-text>
+    </nb-content>
+  </nb-container>
 </template>
-
-<style>
-.container {
-  background-color: white;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-}
-.text-color-primary {
-  color: blue;
-}
-</style>

@@ -1,8 +1,12 @@
 <template>
-  <app-navigation />
+  <nb-root>
+    <app-navigation />
+  </nb-root>
 </template>
 
 <script>
+import './plugins/native-base'
+
 import { StackNavigator } from 'vue-native-router'
 import Main from './screens/Main.vue'
 
