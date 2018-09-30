@@ -23,6 +23,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "date-fns": "^1.29.0",
     "expo": "^27.0.1",
     "native-base": "^2.8.0",
     "react": "16.3.1",
