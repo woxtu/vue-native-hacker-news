@@ -1,9 +1,20 @@
 <template>
-  <nb-list-item :on-press="onPress">
+  <nb-list-item no-indent>
     <nb-body>
       <view class="flex-column">
-        <view :style="{ marginBottom: 5 }">
-          <app-text>{{ item.title || item.text }}</app-text>
+        <view v-if="item.title" :style="{ marginBottom: 5 }">
+          <app-text bold large>{{ item.title }}</app-text>
+        </view>
+        <view v-if="item.text">
+          <app-text>{{ item.text }}</app-text>
+        </view>
+        <view
+          v-if="item.url"
+          :style="{ paddingTop: 5, paddingBottom: 9 }"
+          class="flex-row"
+        >
+          <app-text-icon name="ios-link" gray />
+          <app-text-link :on-press="onPressLink && onPressLink.bind(this, item.url)"> {{ item.url }}</app-text-link>
         </view>
         <view class="flex-row">
           <app-text small gray>by {{ item.by }}・{{ item.time * 1000 | timeAgo }}・</app-text>
@@ -28,9 +39,6 @@
         </view>
       </view>
     </nb-body>
-    <nb-right class="right">
-      <nb-icon name="arrow-forward" />
-    </nb-right>
   </nb-list-item>
 </template>
 
@@ -38,11 +46,13 @@
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
 import AppText from './AppText.vue'
 import AppTextIcon from './AppTextIcon.vue'
+import AppTextLink from './AppTextLink.vue'
 
 export default {
   components: {
     AppText,
     AppTextIcon,
+    AppTextLink,
   },
   filters: {
     timeAgo (time) {
@@ -51,11 +61,11 @@ export default {
   },
   props: {
     item: { type: Object, default: () => ({}) },
-    onPressItem: { type: Function, default: null },
+    onPressLink: { type: Function, default: null },
   },
   methods: {
     onPress () {
-      this.onPressItem && this.onPressItem(this.item)
+      this.onPressLink && this.onPressLink(this.item.url)
     },
   },
 }
@@ -71,10 +81,5 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-}
-
-.right {
-  flex-grow: 0;
-  flex-basis: 27;
 }
 </style>
