@@ -58,7 +58,9 @@ export default {
       this.navigation.goBack()
     },
     openLink (url) {
-      alert(url)
+      this.navigation.navigate('WebView', {
+        source: { url },
+      })
     },
     openItem ({ id }) {
       this.navigation.navigate('Item', {
