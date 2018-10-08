@@ -1,5 +1,6 @@
 <template>
   <nb-container>
+    <status-bar :network-activity-indicator-visible="isLoading" />
     <app-header
       :title="title"
       :on-press-left="goBack"
@@ -8,7 +9,8 @@
     <web-view
       ref="webView"
       :source="source"
-      :on-navigation-state-change="onNavigationStateChange"
+      :on-load-start="onLoadStart"
+      :on-load-end="onLoadEnd"
     />
     <nb-footer>
       <nb-body class="flex-row space-between">
@@ -53,6 +55,7 @@ export default {
       title: null,
       canGoForward: false,
       canGoBack: false,
+      isLoading: false,
     }
   },
   methods: {
@@ -62,13 +65,15 @@ export default {
     openInBrowser () {
       Linking.openURL(this.url)
     },
-    onNavigationStateChange ({ navigationType, title, canGoForward, canGoBack, url }) {
-      if (!navigationType) {
-        this.url = url
-        this.title = title
-        this.canGoForward = canGoForward
-        this.canGoBack = canGoBack
-      }
+    onLoadStart () {
+      this.isLoading = true
+    },
+    onLoadEnd ({ nativeEvent: { title, canGoForward, canGoBack, url } }) {
+      this.url = url
+      this.title = title
+      this.canGoForward = canGoForward
+      this.canGoBack = canGoBack
+      this.isLoading = false
     },
   },
 }

@@ -6,6 +6,7 @@
 
 <script>
 import './plugins/native-base'
+import './plugins/vuex'
 
 import { StackNavigator } from 'vue-native-router'
 import Main from './screens/Main.vue'
@@ -17,7 +18,7 @@ const AppNavigation = StackNavigator({
   Item: { screen: Item },
   WebView: { screen: WebView },
 }, {
-  initialRouteName: 'Item',
+  initialRouteName: 'Main',
   headerMode: 'none',
 })
 

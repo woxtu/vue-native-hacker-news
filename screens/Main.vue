@@ -1,17 +1,29 @@
 <template>
   <nb-container>
+    <status-bar :network-activity-indicator-visible="isLoading" />
     <app-header title="Hacker News" has-segment />
     <app-segment v-model="feedType" :data="feedTypes" />
-    <flat-list :data="feed" :key-extractor="({ id }, index) => `${id}`">
-      <item-list-item :item="args.item" render-prop-fn="renderItem" />
+    <flat-list
+      :data="items"
+      :key-extractor="({ id }, index) => `${id}`"
+      :on-end-reached="fetchFeedItems"
+      :on-end-reached-threshold="0.1"
+    >
+      <item-list-item
+        :item="args.item"
+        :on-press-item="openItem"
+        render-prop-fn="renderItem"
+      />
     </flat-list>
   </nb-container>
 </template>
 
 <script>
+import { mapActions, mapMutations, mapState } from 'vuex'
 import AppHeader from '../components/AppHeader.vue'
 import AppSegment from '../components/AppSegment.vue'
 import ItemListItem from '../components/ItemListItem.vue'
+import store from '../store'
 
 export default {
   components: {
@@ -22,24 +34,36 @@ export default {
   props: {
     navigation: { type: Object, default: null },
   },
-  data () {
-    return {
-      feedTypes: ['Top', 'New', 'Show', 'Ask'],
-      feedType: 'Top',
-      feed: [],
-    }
+  store,
+  computed: {
+    ...mapState(['isLoading']),
+    ...mapState('feed', ['feedTypes', 'items']),
+    feedType: {
+      get () {
+        return this.$store.state.feed.feedType
+      },
+      set (value) {
+        this.changeType({ type: value })
+        this.fetchFeedItems()
+      },
+    },
+  },
+  watch: {
+    '$store.state.error' (value) {
+      alert(value)
+    },
   },
   created () {
-    // FIXME: for now
-    this.feed = new Array(30).fill().map((_, i) => ({
-      id: i,
-      title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      score: Math.floor(Math.random() * 1000),
-      by: 'John Doe',
-      time: 1314211127,
-      kids: new Array(i).fill(),
-    }))
+    this.fetchFeedItems()
+  },
+  methods: {
+    ...mapMutations('feed', ['changeType']),
+    ...mapActions('feed', ['fetchFeedItems']),
+    openItem ({ id }) {
+      this.navigation.navigate('Item', {
+        id,
+      })
+    },
   },
 }
 </script>

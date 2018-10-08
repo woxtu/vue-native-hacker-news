@@ -1,13 +1,19 @@
 <template>
   <nb-container>
+    <status-bar :network-activity-indicator-visible="isLoading" />
     <app-header
       :on-press-left="goBack"
       title="Hacker News"
       left-icon="arrow-back"
     />
-    <flat-list :data="feed" :key-extractor="({ id }, index) => `${id}`">
+    <flat-list
+      :data="subitemsById(id)"
+      :key-extractor="({ id }, index) => `${id}`"
+      :on-end-reached="fetchSubitems.bind(this, { id })"
+      :on-end-reached-threshold="0.1"
+    >
       <item-list-header
-        :item="feed[0]"
+        :item="itemById(id)"
         :on-press-link="openLink"
         render-prop="ListHeaderComponent"
       />
@@ -21,9 +27,11 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState } from 'vuex'
 import AppHeader from '../components/AppHeader.vue'
 import ItemListHeader from '../components/ItemListHeader.vue'
 import ItemListItem from '../components/ItemListItem.vue'
+import store from '../store'
 
 export default {
   components: {
@@ -34,26 +42,26 @@ export default {
   props: {
     navigation: { type: Object, default: null },
   },
+  store,
   data () {
     return {
       id: this.navigation.getParam('id'),
-      feed: [],
     }
   },
+  computed: {
+    ...mapState(['isLoading']),
+    ...mapGetters('item', ['itemById', 'subitemsById']),
+  },
+  watch: {
+    '$store.state.error' (value) {
+      alert(value)
+    },
+  },
   created () {
-    // FIXME: for now
-    this.feed = new Array(30).fill().map((_, i) => ({
-      id: i,
-      title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      score: Math.floor(Math.random() * 1000),
-      by: 'John Doe',
-      time: 1314211127,
-      kids: new Array(i).fill(),
-      url: 'https://google.com',
-    }))
+    this.fetchItem({ id: this.id })
   },
   methods: {
+    ...mapActions('item', ['fetchItem', 'fetchSubitems']),
     goBack () {
       this.navigation.goBack()
     },
