@@ -1,40 +1,42 @@
 <template>
-  <nb-list-item no-indent>
+  <nb-list-item v-if="item.id" no-indent>
     <nb-body>
       <view class="flex-column">
-        <view v-if="item.title" :style="{ marginBottom: 5 }">
-          <app-text bold large>{{ item.title }}</app-text>
-        </view>
-        <view v-if="item.text">
-          <app-text>{{ item.text }}</app-text>
-        </view>
-        <view
-          v-if="item.url"
-          :style="{ paddingTop: 5, paddingBottom: 9 }"
-          class="flex-row"
+        <app-text
+          v-if="item.title"
+          :style="{ marginBottom: 5 }"
+          bold
+          large
         >
-          <app-text-icon name="ios-link" gray />
-          <app-text-link :on-press="onPressLink && onPressLink.bind(this, item.url)"> {{ item.url }}</app-text-link>
+          {{ item.title }}
+        </app-text>
+        <view v-if="item.text" :style="{ marginBottom: 5 }">
+          <app-html :source="item.text" :on-press-link="onPressLink" />
         </view>
+        <app-text-link
+          v-if="item.url"
+          :on-press="onPressLink && onPressLink.bind(this, item.url)"
+          :style="{ marginBottom: 5 }"
+        >
+          {{ item.url }}
+        </app-text-link>
         <view class="flex-row">
           <app-text small gray>by {{ item.by }}・{{ item.time * 1000 | timeAgo }}・</app-text>
-          <view v-if="item.score !== undefined" class="flex-row">
-            <app-text-icon
-              type="FontAwesome"
-              name="thumbs-o-up"
-              small
-              gray
-            />
-            <app-text small gray> {{ item.score || 0 }}  </app-text>
-          </view>
-          <view v-if="item.kids !== undefined" class="flex-row">
+          <app-text-icon
+            type="FontAwesome"
+            name="thumbs-o-up"
+            small
+            gray
+          />
+          <app-text small gray> {{ item.score || 0 }}  </app-text>
+          <view v-if="item.kids && 0 < item.kids.length" class="flex-row">
             <app-text-icon
               type="FontAwesome"
               name="comment-o"
               small
               gray
             />
-            <app-text small gray> {{ item.kids.length || 0 }}</app-text>
+            <app-text small gray> {{ item.kids.length }}</app-text>
           </view>
         </view>
       </view>
@@ -44,12 +46,14 @@
 
 <script>
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
+import AppHtml from './AppHtml.vue'
 import AppText from './AppText.vue'
 import AppTextIcon from './AppTextIcon.vue'
 import AppTextLink from './AppTextLink.vue'
 
 export default {
   components: {
+    AppHtml,
     AppText,
     AppTextIcon,
     AppTextLink,
@@ -73,12 +77,10 @@ export default {
 
 <style scoped>
 .flex-column {
-  display: flex;
   flex-direction: column;
 }
 
 .flex-row {
-  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }

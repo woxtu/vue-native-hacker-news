@@ -20,6 +20,7 @@
       <item-list-item
         :item="args.item"
         :on-press-item="openItem"
+        :on-press-link="openLink"
         render-prop-fn="renderItem"
       />
     </flat-list>
@@ -65,9 +66,9 @@ export default {
     goBack () {
       this.navigation.goBack()
     },
-    openLink (url) {
+    openLink (uri) {
       this.navigation.navigate('WebView', {
-        source: { url },
+        source: { uri },
       })
     },
     openItem ({ id }) {

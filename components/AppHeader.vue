@@ -45,7 +45,7 @@ export default {
 }
 
 .body {
-  flex-grow: 1;
+  flex: 1;
 }
 
 .right {

@@ -2,28 +2,27 @@
   <nb-list-item :on-press="onPress">
     <nb-body>
       <view class="flex-column">
-        <view :style="{ marginBottom: 5 }">
-          <app-text>{{ item.title || item.text }}</app-text>
+        <app-text v-if="item.title" :style="{ marginBottom: 5 }">{{ item.title }}</app-text>
+        <view v-else-if="item.text" :style="{ marginBottom: 5 }">
+          <app-html :source="item.text" :on-press-link="onPressLink" />
         </view>
         <view class="flex-row">
           <app-text small gray>by {{ item.by }}・{{ item.time * 1000 | timeAgo }}・</app-text>
-          <view v-if="item.score !== undefined" class="flex-row">
-            <app-text-icon
-              type="FontAwesome"
-              name="thumbs-o-up"
-              small
-              gray
-            />
-            <app-text small gray> {{ item.score || 0 }}  </app-text>
-          </view>
-          <view v-if="item.kids !== undefined" class="flex-row">
+          <app-text-icon
+            type="FontAwesome"
+            name="thumbs-o-up"
+            small
+            gray
+          />
+          <app-text small gray> {{ item.score || 0 }}  </app-text>
+          <view v-if="item.kids && 0 < item.kids.length" class="flex-row">
             <app-text-icon
               type="FontAwesome"
               name="comment-o"
               small
               gray
             />
-            <app-text small gray> {{ item.kids.length || 0 }}</app-text>
+            <app-text small gray> {{ item.kids.length }}</app-text>
           </view>
         </view>
       </view>
@@ -36,11 +35,13 @@
 
 <script>
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
+import AppHtml from './AppHtml.vue'
 import AppText from './AppText.vue'
 import AppTextIcon from './AppTextIcon.vue'
 
 export default {
   components: {
+    AppHtml,
     AppText,
     AppTextIcon,
   },
@@ -52,6 +53,7 @@ export default {
   props: {
     item: { type: Object, default: () => ({}) },
     onPressItem: { type: Function, default: null },
+    onPressLink: { type: Function, default: null },
   },
   methods: {
     onPress () {
@@ -63,12 +65,10 @@ export default {
 
 <style scoped>
 .flex-column {
-  display: flex;
   flex-direction: column;
 }
 
 .flex-row {
-  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }

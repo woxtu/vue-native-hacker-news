@@ -81,7 +81,6 @@ export default {
 
 <style>
 .flex-row {
-  display: flex;
   flex-direction: row;
   align-items: center;
 }
