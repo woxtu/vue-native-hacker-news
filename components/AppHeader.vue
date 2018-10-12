@@ -1,5 +1,5 @@
 <template>
-  <nb-header :has-segment="hasSegment">
+  <nb-header :has-segment="hasSegment" :style="styles.header">
     <nb-left class="left">
       <app-icon-button
         v-if="leftIcon"
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { Platform, StatusBar } from 'react-native'
 import AppIconButton from './AppIconButton.vue'
 
 export default {
@@ -34,6 +35,20 @@ export default {
     onPressLeft: { type:Function, default: null },
     rightIcon: { type:String , default: null },
     onPressRight: { type: Function, default: null },
+  },
+  data () {
+    return {
+      styles: {
+        header: {
+          ...Platform.select({
+            android: {
+              paddingTop: StatusBar.currentHeight,
+              height: 56 + StatusBar.currentHeight,
+            },
+          }),
+        },
+      },
+    }
   },
 }
 </script>

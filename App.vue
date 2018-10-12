@@ -1,6 +1,7 @@
 <template>
   <app-style-provider>
-    <nb-root>
+    <app-loading v-if="!isAppReady" />
+    <nb-root v-else>
       <app-navigation />
     </nb-root>
   </app-style-provider>
@@ -10,6 +11,7 @@
 import './plugins/native-base'
 import './plugins/vuex'
 
+import Expo, { AppLoading } from 'expo'
 import { StackNavigator } from 'vue-native-router'
 import Main from './screens/Main.vue'
 import Item from './screens/Item.vue'
@@ -27,8 +29,21 @@ const AppNavigation = StackNavigator({
 
 export default {
   components: {
+    AppLoading,
     AppNavigation,
     AppStyleProvider,
+  },
+  data () {
+    return {
+      isAppReady: false,
+    }
+  },
+  async created () {
+    await Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    })
+    this.isAppReady = true
   },
 }
 </script>

@@ -27,9 +27,6 @@
         </view>
       </view>
     </nb-body>
-    <nb-right class="right">
-      <nb-icon name="arrow-forward" />
-    </nb-right>
   </nb-list-item>
 </template>
 
@@ -71,10 +68,5 @@ export default {
 .flex-row {
   flex-direction: row;
   flex-wrap: wrap;
-}
-
-.right {
-  flex-grow: 0;
-  flex-basis: 27;
 }
 </style>
